@@ -37,6 +37,15 @@ void events(Game *g) {
     case SDL_EVENT_QUIT:
       g->is_running = false;
       break;
+    case SDL_EVENT_KEY_DOWN:
+      switch (g->event.key.scancode) {
+      case SDL_SCANCODE_ESCAPE:
+        g->is_running = false;
+        break;
+      default:
+        break;
+      }
+      break;
     default:
       break;
     }
