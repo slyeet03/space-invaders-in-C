@@ -1,3 +1,5 @@
+#include "../includes/game.h"
+
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <stdbool.h>
@@ -10,15 +12,9 @@
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
-typedef struct {
-  SDL_Window *window;
-  SDL_Renderer *renderer;
-} Game;
-
-// declaring all the functions cause compiler is stupid
+// declaring the function beforehand cuz the compiler is fckin stupid
 bool init_sdl(Game *g);
 void game_free(Game *g);
-void run(Game *g);
 
 // to initialize sdl
 bool init_sdl(Game *g) {
@@ -54,26 +50,6 @@ void game_free(Game *g) {
   }
 
   SDL_Quit();
-}
-
-void run(Game *g) {
-  SDL_Event event;
-  bool running = true;
-
-  while (running) {
-    while (SDL_PollEvent(&event)) {
-      if (event.type == SDL_EVENT_QUIT) {
-        running = false;
-      }
-      if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_ESCAPE) {
-        running = false;
-      }
-    }
-
-    SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
-    SDL_RenderClear(g->renderer);
-    SDL_RenderPresent(g->renderer);
-  }
 }
 
 int main() {
