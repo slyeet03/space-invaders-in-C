@@ -10,8 +10,11 @@
 typedef struct {
   SDL_Window *window;
   SDL_Renderer *renderer;
+  SDL_Event event;
+  bool is_running;
 } Game;
 
+bool new (Game **game);
 void run(Game *g);
 
 #endif

@@ -1,3 +1,4 @@
+#include "../includes/main.h"
 #include "../includes/game.h"
 
 #include <SDL3/SDL.h>
@@ -5,16 +6,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#define SDL_FLAGS SDL_INIT_VIDEO
-
-#define WINDOW_TITLE "Game"
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
-
-// declaring the function beforehand cuz the compiler is fckin stupid
-bool init_sdl(Game *g);
-void game_free(Game *g);
 
 // to initialize sdl
 bool init_sdl(Game *g) {
@@ -39,26 +30,32 @@ bool init_sdl(Game *g) {
 }
 
 // to free all the memory
-void game_free(Game *g) {
-  if (g->renderer) {
-    SDL_DestroyRenderer(g->renderer);
-    g->renderer = NULL;
-  }
-  if (g->window) {
-    SDL_DestroyWindow(g->window);
-    g->window = NULL;
-  }
+void game_free(Game **game) {
+  if (*game) {
+    Game *g = *game;
+    if (g->renderer) {
+      SDL_DestroyRenderer(g->renderer);
+      g->renderer = NULL;
+    }
+    if (g->window) {
+      SDL_DestroyWindow(g->window);
+      g->window = NULL;
+    }
 
-  SDL_Quit();
+    SDL_Quit();
+    free(g);
+    g = NULL;
+    *game = NULL;
+  }
 }
 
 int main() {
   bool exit_status = EXIT_FAILURE;
 
-  Game game = {0};
+  Game *game = NULL;
 
-  if (init_sdl(&game)) {
-    run(&game);
+  if (new(&game)) {
+    run(game);
 
     exit_status = EXIT_SUCCESS;
   }
