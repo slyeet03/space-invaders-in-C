@@ -1,16 +1,15 @@
 #include "../includes/main.h"
 #include "../includes/game.h"
 
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_main.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 // to initialize sdl
 bool init_sdl(Game *g) {
   if (!SDL_Init(SDL_FLAGS)) {
     fprintf(stderr, "Error intializing SDL: %s\n", SDL_GetError());
+    return false;
+  }
+
+  if (!TTF_Init()) {
+    fprintf(stderr, "Error intializing SDL3_ttf: %s\n", SDL_GetError());
     return false;
   }
 
@@ -33,6 +32,15 @@ bool init_sdl(Game *g) {
 void game_free(Game **game) {
   if (*game) {
     Game *g = *game;
+
+    if (g->score_image) {
+      SDL_DestroyTexture(g->score_image);
+      g->score_image = NULL;
+    }
+    if (g->font) {
+      TTF_CloseFont(g->font);
+      g->font = NULL;
+    }
     if (g->renderer) {
       SDL_DestroyRenderer(g->renderer);
       g->renderer = NULL;
@@ -42,6 +50,7 @@ void game_free(Game **game) {
       g->window = NULL;
     }
 
+    TTF_Quit();
     SDL_Quit();
     free(g);
     g = NULL;
