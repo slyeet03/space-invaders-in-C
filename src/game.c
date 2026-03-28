@@ -50,47 +50,13 @@ void events(Game *g) {
   }
 }
 
-bool load_score(Game *g) {
-  SDL_Surface *surface =
-      TTF_RenderText_Blended(g->font, SCORE_TXT, 0, RED_COLOR);
-  if (!surface) {
-    fprintf(stderr, "Error rendering score: %s\n", SDL_GetError());
-    return false;
-  }
-
-  // getting the dimensions for the rectangle from the surface struct directly
-  g->score_rect.w = (float)surface->w;
-  g->score_rect.h = (float)surface->h;
-  // changing x and y of the rectangle
-  g->score_rect.x = 10;
-  g->score_rect.y = 10;
-
-  // converting the font surface to texture
-  g->score_image = SDL_CreateTextureFromSurface(g->renderer, surface);
-  SDL_DestroySurface(surface);
-  surface = NULL;
-  if (!g->score_image) {
-    fprintf(stderr, "Error creating texture from surface: %s\n",
-            SDL_GetError());
-    return false;
-  }
-  // when scaling an image it try to not get that much blury
-  if (!SDL_SetTextureScaleMode(g->score_image, SDL_SCALEMODE_NEAREST)) {
-    fprintf(stderr, "Error setting texture scale mode: %s\n", SDL_GetError());
-    return false;
-  }
-
-  return true;
-}
-
 bool load_media(Game *g) {
-  g->font = TTF_OpenFont("../assets/fonts/FiraCode-Bold.ttf", FONT_SIZE);
-  if (!g->font) {
-    fprintf(stderr, "Error opening font: %s\n", SDL_GetError());
+  if (!score_new(g)) {
+    fprintf(stderr, "Error loading score font");
     return false;
   }
 
-  if (!load_score(g)) {
+  if (!score_load(g)) {
     fprintf(stderr, "Error loading score");
     return false;
   }

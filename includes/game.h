@@ -9,19 +9,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "score.h"
+
 typedef struct {
   SDL_Window *window;
   SDL_Renderer *renderer;
   SDL_Event event;
-  TTF_Font *font;
-  SDL_Texture *score_image;
-  SDL_FRect score_rect;
+  Score *score;
   bool is_running;
 } Game;
 
 bool new (Game **game);
 void run(Game *g);
 bool load_media(Game *g);
-bool load_score(Game *g);
 
 #endif
