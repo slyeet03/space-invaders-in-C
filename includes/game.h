@@ -11,7 +11,7 @@
 
 #include "score.h"
 
-typedef struct {
+typedef struct Game {
   SDL_Window *window;
   SDL_Renderer *renderer;
   SDL_Event event;

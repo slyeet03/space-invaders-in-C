@@ -68,7 +68,7 @@ void draw(Game *g) {
   SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
   SDL_RenderClear(g->renderer);
 
-  SDL_RenderTexture(g->renderer, g->score_image, NULL, &g->score_rect);
+  SDL_RenderTexture(g->renderer, g->score->image, NULL, &g->score->rect);
 
   SDL_RenderPresent(g->renderer);
 }

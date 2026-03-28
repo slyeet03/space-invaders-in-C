@@ -16,9 +16,9 @@ typedef struct {
   int value;
 } Score;
 
-struct Game;
+typedef struct Game Game;
 
-bool score_new(struct Game *g);
-bool score_load(struct Game *g);
+bool score_new(Game *g);
+bool score_load(Game *g);
 
 #endif

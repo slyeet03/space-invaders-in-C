@@ -9,6 +9,12 @@
 #include <stdlib.h>
 
 bool score_new(Game *g) {
+  g->score = calloc(1, sizeof(Score)); // allocate the struct
+  if (!g->score) {
+    fprintf(stderr, "Error allocating score\n");
+    return false;
+  }
+
   g->score->font = TTF_OpenFont("../assets/fonts/FiraCode-Bold.ttf", FONT_SIZE);
   if (!g->score->font) {
     fprintf(stderr, "Error opening font: %s\n", SDL_GetError());

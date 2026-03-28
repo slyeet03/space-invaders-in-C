@@ -15,6 +15,7 @@ add_executable(space_invaders
     src/game.c
     src/player.c
     src/enemy.c
+    src/score.c
 )
 
 target_include_directories(space_invaders PRIVATE include)
