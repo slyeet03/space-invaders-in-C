@@ -20,5 +20,7 @@ typedef struct Game Game;
 
 bool score_new(Game *g);
 bool score_load(Game *g);
+void score_render(Game *g, SDL_Renderer *r);
+void score_free(Game *g);
 
 #endif

@@ -56,3 +56,22 @@ bool score_load(Game *g) {
 
   return true;
 }
+
+void score_render(Game *g, SDL_Renderer *r) {
+  SDL_RenderTexture(r, g->score->image, NULL, &g->score->rect);
+}
+
+void score_free(Game *g) {
+  if (g->score) {
+    if (g->score->image) {
+      SDL_DestroyTexture(g->score->image);
+      g->score->image = NULL;
+    }
+    if (g->score->font) {
+      TTF_CloseFont(g->score->font);
+      g->score->font = NULL;
+    }
+    free(g->score);
+    g->score = NULL;
+  }
+}

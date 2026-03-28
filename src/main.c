@@ -33,18 +33,8 @@ void game_free(Game **game) {
   if (*game) {
     Game *g = *game;
 
-    if (g->score) {
-      if (g->score->image) {
-        SDL_DestroyTexture(g->score->image);
-        g->score->image = NULL;
-      }
-      if (g->score->font) {
-        TTF_CloseFont(g->score->font);
-        g->score->font = NULL;
-      }
-      free(g->score);
-      g->score = NULL;
-    }
+    score_free(g);
+    player_free(g->player);
 
     if (g->renderer) {
       SDL_DestroyRenderer(g->renderer);

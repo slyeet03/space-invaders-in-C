@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "player.h"
 #include "score.h"
 
 typedef struct Game {
@@ -16,11 +17,13 @@ typedef struct Game {
   SDL_Renderer *renderer;
   SDL_Event event;
   Score *score;
+  Player *player;
   bool is_running;
 } Game;
 
 bool new (Game **game);
 void run(Game *g);
 bool load_media(Game *g);
+void update(Game *g);
 
 #endif

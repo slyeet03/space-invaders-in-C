@@ -40,6 +40,14 @@ void events(Game *g) {
       case SDL_SCANCODE_ESCAPE:
         g->is_running = false;
         break;
+      case SDL_SCANCODE_LEFT:
+        g->player->move_left = true;
+        g->player->move_right = false;
+        break;
+      case SDL_SCANCODE_RIGHT:
+        g->player->move_right = true;
+        g->player->move_left = false;
+        break;
       default:
         break;
       }
@@ -61,14 +69,27 @@ bool load_media(Game *g) {
     return false;
   }
 
+  if (!player_new(&g->player)) {
+    fprintf(stderr, "Error initializing player");
+    return false;
+  }
+
+  if (!player_load(g->player, g)) {
+    fprintf(stderr, "Error loading player");
+    return false;
+  }
+
   return true;
 }
+
+void update(Game *g) { player_update(g->player); }
 
 void draw(Game *g) {
   SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
   SDL_RenderClear(g->renderer);
 
-  SDL_RenderTexture(g->renderer, g->score->image, NULL, &g->score->rect);
+  score_render(g, g->renderer);
+  player_render(g->player, g->renderer);
 
   SDL_RenderPresent(g->renderer);
 }
@@ -76,6 +97,7 @@ void draw(Game *g) {
 void run(Game *g) {
   while (g->is_running) {
     events(g);
+    update(g);
     draw(g);
 
     SDL_Delay(16);
