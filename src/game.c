@@ -50,13 +50,7 @@ void events(Game *g) {
   }
 }
 
-bool load_media(Game *g) {
-  g->font = TTF_OpenFont("../assets/fonts/FiraCode-Bold.ttf", FONT_SIZE);
-  if (!g->font) {
-    fprintf(stderr, "Error opening font: %s\n", SDL_GetError());
-    return false;
-  }
-
+bool load_score(Game *g) {
   SDL_Surface *surface =
       TTF_RenderText_Blended(g->font, SCORE_TXT, 0, RED_COLOR);
   if (!surface) {
@@ -83,6 +77,21 @@ bool load_media(Game *g) {
   // when scaling an image it try to not get that much blury
   if (!SDL_SetTextureScaleMode(g->score_image, SDL_SCALEMODE_NEAREST)) {
     fprintf(stderr, "Error setting texture scale mode: %s\n", SDL_GetError());
+    return false;
+  }
+
+  return true;
+}
+
+bool load_media(Game *g) {
+  g->font = TTF_OpenFont("../assets/fonts/FiraCode-Bold.ttf", FONT_SIZE);
+  if (!g->font) {
+    fprintf(stderr, "Error opening font: %s\n", SDL_GetError());
+    return false;
+  }
+
+  if (!load_score(g)) {
+    fprintf(stderr, "Error loading score");
     return false;
   }
 

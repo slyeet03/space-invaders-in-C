@@ -22,5 +22,6 @@ typedef struct {
 bool new (Game **game);
 void run(Game *g);
 bool load_media(Game *g);
+bool load_score(Game *g);
 
 #endif
