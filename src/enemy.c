@@ -21,7 +21,7 @@ void enemies_new(Game *g) {
       g->enemies[i][j].rect.x = x;
       g->enemies[i][j].rect.y = y;
 
-      g->enemies[i][j].speed = 1.0f;
+      g->enemies[i][j].speed = 2.0f;
     }
   }
 }
@@ -47,14 +47,14 @@ void enemies_update(Game *g) {
       g->enemy_direction = -(g->enemy_direction);
       for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
-          g->enemies[i][j].rect.y += g->enemies[i][j].speed * 10.0;
+          g->enemies[i][j].rect.y += g->enemies[i][j].speed * 5.0;
         }
       }
     }
-    for (int i = 0; i < ROWS; i++) {
-      for (int j = 0; j < COLS; j++) {
-        g->enemies[i][j].rect.x += g->enemies[i][j].speed * g->enemy_direction;
-      }
+  }
+  for (int i = 0; i < ROWS; i++) {
+    for (int j = 0; j < COLS; j++) {
+      g->enemies[i][j].rect.x += g->enemies[i][j].speed * g->enemy_direction;
     }
   }
 }
