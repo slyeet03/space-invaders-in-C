@@ -17,6 +17,7 @@ typedef struct Enemy {
   SDL_Texture *texture;
   SDL_FRect rect;
   bool alive;
+  int speed;
 } Enemy;
 
 typedef struct Game Game;
@@ -24,5 +25,6 @@ typedef struct Game Game;
 void enemies_new(Game *g);
 bool enemies_load(Game *g);
 void enemies_render(Game *g, SDL_Renderer *r);
+void enemies_update(Game *g);
 
 #endif

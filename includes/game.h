@@ -23,6 +23,7 @@ typedef struct Game {
   Score *score;
   Player *player;
   Enemy enemies[ROWS][COLS];
+  int enemy_direction;
   bool is_running;
 } Game;
 

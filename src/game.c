@@ -33,6 +33,7 @@ bool new(Game **game) {
     return false;
   }
 
+  g->enemy_direction = 1;
   g->is_running = true;
 
   return true;
@@ -97,6 +98,7 @@ bool load_media(Game *g) {
 void update(Game *g) {
   player_update(g->player);
   bullet_update(g->player);
+  enemies_update(g);
 }
 
 void draw(Game *g) {
