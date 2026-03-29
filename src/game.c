@@ -1,5 +1,7 @@
 #include "../includes/game.h"
+#include "../includes/enemy.h"
 #include "../includes/main.h"
+#include "../includes/player.h"
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -48,6 +50,9 @@ void events(Game *g) {
         g->player->move_right = true;
         g->player->move_left = false;
         break;
+      case SDL_SCANCODE_SPACE:
+        player_fire(g->player);
+        break;
       default:
         break;
       }
@@ -82,7 +87,10 @@ bool load_media(Game *g) {
   return true;
 }
 
-void update(Game *g) { player_update(g->player); }
+void update(Game *g) {
+  player_update(g->player);
+  bullet_update(g->player);
+}
 
 void draw(Game *g) {
   SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
@@ -90,6 +98,7 @@ void draw(Game *g) {
 
   score_render(g, g->renderer);
   player_render(g->player, g->renderer);
+  bullet_render(g->player, g->renderer);
 
   SDL_RenderPresent(g->renderer);
 }

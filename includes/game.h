@@ -9,8 +9,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "enemy.h"
 #include "player.h"
 #include "score.h"
+
+#define ROWS 5
+#define COLS 3
 
 typedef struct Game {
   SDL_Window *window;
@@ -18,6 +22,7 @@ typedef struct Game {
   SDL_Event event;
   Score *score;
   Player *player;
+  Enemy enemies[ROWS][COLS];
   bool is_running;
 } Game;
 

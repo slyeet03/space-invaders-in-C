@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int bulletPool[MAX_BULLETS];
+
 bool player_new(Player **p) {
   *p = calloc(1, sizeof(Player));
   if (!(*p)) {
@@ -28,6 +30,13 @@ bool player_new(Player **p) {
 
   (*p)->move_left = false;
   (*p)->move_right = false;
+
+  for (int i = 0; i < MAX_BULLETS; i++) {
+    (*p)->bullets[i].active = false;
+    (*p)->bullets[i].rect.w = 5.0f;
+    (*p)->bullets[i].rect.h = 15.0f;
+    (*p)->bullets[i].speed = 10.0f;
+  }
 
   return true;
 }
@@ -52,6 +61,39 @@ bool player_load(Player *p, Game *g) {
   }
 
   return true;
+}
+
+void player_fire(Player *p) {
+  for (int i = 0; i < MAX_BULLETS; i++) {
+    if (!p->bullets[i].active) {
+      p->bullets[i].active = true;
+
+      p->bullets[i].rect.x =
+          p->rect.x + (p->rect.w / 2) - (p->bullets[i].rect.w / 2);
+      p->bullets[i].rect.y = p->rect.y;
+    }
+  }
+}
+
+void bullet_update(Player *p) {
+  for (int i = 0; i < MAX_BULLETS; i++) {
+    if (p->bullets[i].active) {
+      p->bullets[i].rect.y = p->bullets[i].rect.y - p->bullets[i].speed;
+
+      if (p->bullets[i].rect.y < 0) {
+        p->bullets[i].active = false;
+      }
+    }
+  }
+}
+
+void bullet_render(Player *p, SDL_Renderer *r) {
+  for (int i = 0; i < MAX_BULLETS; i++) {
+    if (p->bullets[i].active) {
+      SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
+      SDL_RenderFillRect(r, &p->bullets->rect);
+    }
+  }
 }
 
 void player_update(Player *p) {
