@@ -22,6 +22,13 @@ bool new(Game **game) {
     return false;
   }
 
+  if (!player_new(&g->player)) {
+    fprintf(stderr, "Error initializing player");
+    return false;
+  }
+
+  enemies_new(g);
+
   if (!load_media(g)) {
     return false;
   }
@@ -74,13 +81,13 @@ bool load_media(Game *g) {
     return false;
   }
 
-  if (!player_new(&g->player)) {
-    fprintf(stderr, "Error initializing player");
+  if (!player_load(g->player, g)) {
+    fprintf(stderr, "Error loading player");
     return false;
   }
 
-  if (!player_load(g->player, g)) {
-    fprintf(stderr, "Error loading player");
+  if (!enemies_load(g)) {
+    fprintf(stderr, "Error loading enemies");
     return false;
   }
 
@@ -99,6 +106,7 @@ void draw(Game *g) {
   score_render(g, g->renderer);
   player_render(g->player, g->renderer);
   bullet_render(g->player, g->renderer);
+  enemies_render(g, g->renderer);
 
   SDL_RenderPresent(g->renderer);
 }

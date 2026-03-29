@@ -13,8 +13,8 @@
 #include "player.h"
 #include "score.h"
 
-#define ROWS 5
-#define COLS 3
+#define ROWS 3
+#define COLS 8
 
 typedef struct Game {
   SDL_Window *window;
