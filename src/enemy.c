@@ -62,10 +62,25 @@ bool enemies_load(Game *g) {
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
       if (g->enemies[i][j].alive) {
-        SDL_Surface *surface = IMG_Load("../assets/images/red.png");
-        if (!surface) {
-          fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
-          return false;
+        SDL_Surface *surface;
+        if (i == 0) {
+          surface = IMG_Load("../assets/images/red.png");
+          if (!surface) {
+            fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
+            return false;
+          }
+        } else if (i == 1) {
+          surface = IMG_Load("../assets/images/yellow.png");
+          if (!surface) {
+            fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
+            return false;
+          }
+        } else {
+          surface = IMG_Load("../assets/images/green.png");
+          if (!surface) {
+            fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
+            return false;
+          }
         }
 
         g->enemies[i][j].rect.w = (float)surface->w;
