@@ -125,6 +125,7 @@ void collision_update(Game *g) {
               g->player->bullets[i].active = false;
               g->enemies[j][k].alive = false;
               g->score->value++;
+              g->enemy_alive_count--;
               score_update(g);
               collision = true;
             }

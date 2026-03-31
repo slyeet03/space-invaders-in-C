@@ -24,6 +24,7 @@ typedef struct Game {
   Player *player;
   Enemy enemies[ROWS][COLS];
   int enemy_direction;
+  int enemy_alive_count;
   bool is_running;
 } Game;
 

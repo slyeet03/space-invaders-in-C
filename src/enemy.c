@@ -11,9 +11,11 @@
 bool hit_edge;
 
 void enemies_new(Game *g) {
+  g->enemy_alive_count = 0;
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
       g->enemies[i][j].alive = true;
+      g->enemy_alive_count++;
 
       int x = START_X + j * (g->enemies[i][j].rect.w + ENEMY_SPACING);
       int y = START_Y + i * (g->enemies[i][j].rect.h + ENEMY_SPACING);
@@ -21,7 +23,7 @@ void enemies_new(Game *g) {
       g->enemies[i][j].rect.x = x;
       g->enemies[i][j].rect.y = y;
 
-      g->enemies[i][j].speed = 2.0f;
+      g->enemies[i][j].speed = 1.5f;
     }
   }
 }
@@ -32,6 +34,12 @@ void enemies_update(Game *g) {
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
       if (g->enemies[i][j].alive) {
+        if (g->enemy_alive_count <= 16) {
+          g->enemies[i][j].speed = 2.0f;
+        }
+        if (g->enemy_alive_count <= 8) {
+          g->enemies[i][j].speed = 2.5f;
+        }
         int right_boundary = g->enemies[i][j].rect.x + g->enemies[i][j].rect.w;
         int left_boundary = g->enemies[i][j].rect.x;
         if (right_boundary >= (float)WINDOW_WIDTH) {
