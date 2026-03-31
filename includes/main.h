@@ -19,7 +19,6 @@
 
 #define FONT_SIZE 20
 #define RED_COLOR (SDL_Color){255, 0, 0}
-#define SCORE_TXT "0"
 
 bool init_sdl(Game *g);
 void game_free(Game **game);

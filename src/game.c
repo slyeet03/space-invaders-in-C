@@ -95,10 +95,51 @@ bool load_media(Game *g) {
   return true;
 }
 
+void collision_update(Game *g) {
+  for (int i = 0; i < MAX_BULLETS; i++) {
+    if (g->player->bullets[i].active) {
+      bool collision = false;
+      for (int j = 0; j < ROWS; j++) {
+        for (int k = 0; k < COLS; k++) {
+          if (collision) {
+            break;
+          }
+          if (g->enemies[j][k].alive) {
+            float bullet_left = g->player->bullets[i].rect.x;
+            float bullet_right =
+                g->player->bullets[i].rect.x + g->player->bullets[i].rect.w;
+            float bullet_top = g->player->bullets[i].rect.y;
+            float bullet_bottom =
+                g->player->bullets[i].rect.y + g->player->bullets[i].rect.h;
+
+            float enemy_left = g->enemies[j][k].rect.x;
+            float enemy_right =
+                g->enemies[j][k].rect.x + g->enemies[j][k].rect.w;
+            float enemy_top = g->enemies[j][k].rect.y;
+            float enemy_bottom =
+                g->enemies[j][k].rect.y + g->enemies[j][k].rect.h;
+
+            // bullet rectangle and enemy rectangle overlap
+            if ((bullet_right > enemy_left) && (bullet_left < enemy_right) &&
+                (bullet_bottom > enemy_top) && (bullet_top < enemy_bottom)) {
+              g->player->bullets[i].active = false;
+              g->enemies[j][k].alive = false;
+              g->score->value++;
+              score_update(g);
+              collision = true;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 void update(Game *g) {
   player_update(g->player);
   bullet_update(g->player);
   enemies_update(g);
+  collision_update(g);
 }
 
 void draw(Game *g) {

@@ -64,6 +64,14 @@ bool player_load(Player *p, Game *g) {
 }
 
 void player_fire(Player *p) {
+  // if a bullet is already fired cannot fire another without that bullet being
+  // deleted
+  for (int i = 0; i < MAX_BULLETS; i++) {
+    if (p->bullets[i].active) {
+      return;
+    }
+  }
+
   for (int i = 0; i < MAX_BULLETS; i++) {
     if (!p->bullets[i].active) {
       p->bullets[i].active = true;
@@ -71,6 +79,7 @@ void player_fire(Player *p) {
       p->bullets[i].rect.x =
           p->rect.x + (p->rect.w / 2) - (p->bullets[i].rect.w / 2);
       p->bullets[i].rect.y = p->rect.y;
+      break;
     }
   }
 }
@@ -91,7 +100,7 @@ void bullet_render(Player *p, SDL_Renderer *r) {
   for (int i = 0; i < MAX_BULLETS; i++) {
     if (p->bullets[i].active) {
       SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
-      SDL_RenderFillRect(r, &p->bullets->rect);
+      SDL_RenderFillRect(r, &p->bullets[i].rect);
     }
   }
 }

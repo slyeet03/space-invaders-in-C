@@ -42,13 +42,12 @@ void enemies_update(Game *g) {
         }
       }
     }
-
-    if (hit_edge) {
-      g->enemy_direction = -(g->enemy_direction);
-      for (int i = 0; i < ROWS; i++) {
-        for (int j = 0; j < COLS; j++) {
-          g->enemies[i][j].rect.y += g->enemies[i][j].speed * 5.0;
-        }
+  }
+  if (hit_edge) {
+    g->enemy_direction = -(g->enemy_direction);
+    for (int i = 0; i < ROWS; i++) {
+      for (int j = 0; j < COLS; j++) {
+        g->enemies[i][j].rect.y += g->enemies[i][j].speed * 5.0;
       }
     }
   }

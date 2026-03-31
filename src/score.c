@@ -21,12 +21,17 @@ bool score_new(Game *g) {
     return false;
   }
 
+  g->score->value = 0;
+
   return true;
 }
 
 bool score_load(Game *g) {
+  char scoreValue[20];
+  sprintf(scoreValue, "%d", g->score->value);
+
   SDL_Surface *surface =
-      TTF_RenderText_Blended(g->score->font, SCORE_TXT, 0, RED_COLOR);
+      TTF_RenderText_Blended(g->score->font, scoreValue, 0, RED_COLOR);
   if (!surface) {
     fprintf(stderr, "Error rendering score: %s\n", SDL_GetError());
     return false;
@@ -55,6 +60,26 @@ bool score_load(Game *g) {
   }
 
   return true;
+}
+
+void score_update(Game *g) {
+  char buf[32];
+  snprintf(buf, sizeof(buf), "%d", g->score->value);
+
+  if (g->score->image) {
+    SDL_DestroyTexture(g->score->image);
+    g->score->image = NULL;
+  }
+
+  SDL_Surface *surface =
+      TTF_RenderText_Blended(g->score->font, buf, 0, RED_COLOR);
+  if (!surface)
+    return;
+
+  g->score->rect.w = (float)surface->w;
+  g->score->rect.h = (float)surface->h;
+  g->score->image = SDL_CreateTextureFromSurface(g->renderer, surface);
+  SDL_DestroySurface(surface);
 }
 
 void score_render(Game *g, SDL_Renderer *r) {
