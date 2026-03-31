@@ -135,11 +135,25 @@ void collision_update(Game *g) {
   }
 }
 
+void game_over(Game *g) {
+  for (int i = 0; i < ROWS; i++) {
+    for (int j = 0; j < COLS; j++) {
+      if (g->enemies[i][j].alive) {
+        if ((g->enemies[i][j].rect.y + g->enemies[i][j].rect.h) >=
+            g->player->rect.y) {
+          g->is_running = false;
+        }
+      }
+    }
+  }
+}
+
 void update(Game *g) {
   player_update(g->player);
   bullet_update(g->player);
   enemies_update(g);
   collision_update(g);
+  game_over(g);
 }
 
 void draw(Game *g) {

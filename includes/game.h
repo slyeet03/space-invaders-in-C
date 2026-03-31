@@ -31,5 +31,6 @@ bool new (Game **game);
 void run(Game *g);
 bool load_media(Game *g);
 void update(Game *g);
+void game_over(Game *g);
 
 #endif
