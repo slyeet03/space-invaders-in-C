@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+enum state game_state;
+
 // constructor of the game
 bool new(Game **game) {
   *game = calloc(1, sizeof(Game));
@@ -36,10 +38,75 @@ bool new(Game **game) {
   g->enemy_direction = 1;
   g->is_running = true;
 
+  game_state = MENU;
+
   return true;
 }
 
+void game_reset(Game *g) {
+  // score reset
+  g->score->value = 0;
+  score_update(g);
+
+  // player reset
+  g->player->rect.x = (WINDOW_WIDTH / 2.0f) - (g->player->rect.w / 2.0f);
+  g->player->rect.y = WINDOW_HEIGHT - 80;
+
+  g->player->displacement = 45;
+
+  g->player->move_left = false;
+  g->player->move_right = false;
+
+  // bullet reset
+  for (int i = 0; i < MAX_BULLETS; i++) {
+    g->player->bullets[i].active = false;
+    g->player->bullets[i].rect.w = 5.0f;
+    g->player->bullets[i].rect.h = 15.0f;
+    g->player->bullets[i].speed = 10.0f;
+    g->player->bullets[i].rect.x = 0.0f;
+    g->player->bullets[i].rect.y = 0.0f;
+  }
+
+  // enemy reset
+  g->enemy_alive_count = 0;
+  for (int i = 0; i < ROWS; i++) {
+    for (int j = 0; j < COLS; j++) {
+      g->enemies[i][j].alive = true;
+      g->enemy_alive_count++;
+
+      int x = START_X + j * (g->enemies[i][j].rect.w + ENEMY_SPACING);
+      int y = START_Y + i * (g->enemies[i][j].rect.h + ENEMY_SPACING);
+
+      g->enemies[i][j].rect.x = x;
+      g->enemies[i][j].rect.y = y;
+
+      g->enemies[i][j].speed = 1.5f;
+
+      if (i == 0) {
+        g->enemies[i][j].health = 3;
+      } else if (i == 1) {
+        g->enemies[i][j].health = 2;
+      } else {
+        g->enemies[i][j].health = 1;
+      }
+    }
+  }
+  g->enemy_direction = 1;
+}
+
 void events(Game *g) {
+  if (game_state == MENU) {
+    menu_events(g);
+  }
+  if (game_state == PLAYING) {
+    game_events(g);
+  }
+  if (game_state == GAME_OVER) {
+    gameover_events(g);
+  }
+}
+
+void game_events(Game *g) {
   while (SDL_PollEvent(&g->event)) {
     switch (g->event.type) {
     case SDL_EVENT_QUIT:
@@ -60,6 +127,55 @@ void events(Game *g) {
         break;
       case SDL_SCANCODE_SPACE:
         player_fire(g->player);
+        break;
+      default:
+        break;
+      }
+      break;
+    default:
+      break;
+    }
+  }
+}
+
+void menu_events(Game *g) {
+  while (SDL_PollEvent(&g->event)) {
+    switch (g->event.type) {
+    case SDL_EVENT_QUIT:
+      g->is_running = false;
+      break;
+    case SDL_EVENT_KEY_DOWN:
+      switch (g->event.key.scancode) {
+      case SDL_SCANCODE_ESCAPE:
+        g->is_running = false;
+        break;
+      case SDL_SCANCODE_RETURN:
+        game_state = PLAYING;
+        break;
+      default:
+        break;
+      }
+      break;
+    default:
+      break;
+    }
+  }
+}
+
+void gameover_events(Game *g) {
+  while (SDL_PollEvent(&g->event)) {
+    switch (g->event.type) {
+    case SDL_EVENT_QUIT:
+      g->is_running = false;
+      break;
+    case SDL_EVENT_KEY_DOWN:
+      switch (g->event.key.scancode) {
+      case SDL_SCANCODE_ESCAPE:
+        g->is_running = false;
+        break;
+      case SDL_SCANCODE_R:
+        game_state = PLAYING;
+        game_reset(g);
         break;
       default:
         break;
@@ -155,7 +271,7 @@ void game_over(Game *g) {
       if (g->enemies[i][j].alive) {
         if ((g->enemies[i][j].rect.y + g->enemies[i][j].rect.h) >=
             g->player->rect.y) {
-          g->is_running = false;
+          game_state = GAME_OVER;
         }
       }
     }
@@ -170,14 +286,60 @@ void update(Game *g) {
   game_over(g);
 }
 
-void draw(Game *g) {
-  SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
-  SDL_RenderClear(g->renderer);
+void render_text(Game *g, const char *text, float x, float y) {
+  // cheating and using score text system and making it generalised
+  SDL_Surface *surface =
+      TTF_RenderText_Blended(g->score->font, text, 0, RED_COLOR);
+  if (!surface)
+    return;
 
+  SDL_Texture *texture = SDL_CreateTextureFromSurface(g->renderer, surface);
+
+  SDL_FRect rect = {x, y, (float)surface->w, (float)surface->h};
+
+  SDL_DestroySurface(surface);
+
+  if (!texture)
+    return;
+
+  SDL_RenderTexture(g->renderer, texture, NULL, &rect);
+  SDL_DestroyTexture(texture);
+}
+
+void render_menu(Game *g) {
+  render_text(g, "SPACE INVADERS", 250, 200);
+  render_text(g, "Press Enter to Start", 230, 300);
+}
+
+void render_game(Game *g) {
   score_render(g, g->renderer);
   player_render(g->player, g->renderer);
   bullet_render(g->player, g->renderer);
   enemies_render(g, g->renderer);
+}
+
+void render_gameover(Game *g) {
+  char score_text[50];
+  sprintf(score_text, "Score: %d", g->score->value);
+
+  render_text(g, "GAME OVER", 300, 200);
+  render_text(g, score_text, 300, 260);
+  render_text(g, "Press R to Restart", 250, 320);
+}
+
+void draw(Game *g) {
+  SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
+  SDL_RenderClear(g->renderer);
+
+  if (game_state == PLAYING) {
+    render_game(g);
+  }
+  if (game_state == MENU) {
+    render_menu(g);
+  }
+  if (game_state == GAME_OVER) {
+    render_gameover(g);
+  }
 
   SDL_RenderPresent(g->renderer);
 }
@@ -185,7 +347,11 @@ void draw(Game *g) {
 void run(Game *g) {
   while (g->is_running) {
     events(g);
-    update(g);
+
+    if (game_state == PLAYING) {
+      update(g);
+    }
+
     draw(g);
 
     SDL_Delay(16);

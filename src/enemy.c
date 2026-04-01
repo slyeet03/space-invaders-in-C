@@ -34,12 +34,13 @@ void enemies_update(Game *g) {
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
       if (g->enemies[i][j].alive) {
-        if (g->enemy_alive_count <= 16) {
-          g->enemies[i][j].speed = 2.8f;
-        }
+
         if (g->enemy_alive_count <= 8) {
           g->enemies[i][j].speed = 3.5f;
+        } else if (g->enemy_alive_count <= 16) {
+          g->enemies[i][j].speed = 2.8f;
         }
+
         int right_boundary = g->enemies[i][j].rect.x + g->enemies[i][j].rect.w;
         int left_boundary = g->enemies[i][j].rect.x;
         if (right_boundary >= (float)WINDOW_WIDTH) {
@@ -55,13 +56,17 @@ void enemies_update(Game *g) {
     g->enemy_direction = -(g->enemy_direction);
     for (int i = 0; i < ROWS; i++) {
       for (int j = 0; j < COLS; j++) {
-        g->enemies[i][j].rect.y += g->enemies[i][j].speed * 5.0;
+        if (g->enemies[i][j].alive) {
+          g->enemies[i][j].rect.y += g->enemies[i][j].speed * 5.0;
+        }
       }
     }
   }
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
-      g->enemies[i][j].rect.x += g->enemies[i][j].speed * g->enemy_direction;
+      if (g->enemies[i][j].alive) {
+        g->enemies[i][j].rect.x += g->enemies[i][j].speed * g->enemy_direction;
+      }
     }
   }
 }

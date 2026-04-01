@@ -26,12 +26,23 @@ typedef struct Game {
   int enemy_direction;
   int enemy_alive_count;
   bool is_running;
+  int state;
 } Game;
+
+enum state { MENU, PLAYING, GAME_OVER };
 
 bool new (Game **game);
 void run(Game *g);
 bool load_media(Game *g);
 void update(Game *g);
 void game_over(Game *g);
+void game_events(Game *g);
+void menu_events(Game *g);
+void gameover_events(Game *g);
+void events(Game *g);
+void game_reset(Game *g);
+void render_menu(Game *g);
+void render_gameover(Game *g);
+void render_game(Game *g);
 
 #endif
