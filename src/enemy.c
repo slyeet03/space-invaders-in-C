@@ -8,28 +8,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-bool hit_edge;
-
 void enemies_new(Game *g) {
   g->enemy_alive_count = 0;
+
+  float enemy_w = g->enemies[0][0].rect.w;
+  float enemy_h = g->enemies[0][0].rect.h;
+  float total_width = COLS * enemy_w + (COLS - 1) * ENEMY_SPACING;
+  float start_x = (WINDOW_WIDTH - total_width) / 2.0f;
+
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
       g->enemies[i][j].alive = true;
       g->enemy_alive_count++;
-
-      int x = START_X + j * (g->enemies[i][j].rect.w + ENEMY_SPACING);
-      int y = START_Y + i * (g->enemies[i][j].rect.h + ENEMY_SPACING);
-
-      g->enemies[i][j].rect.x = x;
-      g->enemies[i][j].rect.y = y;
-
+      g->enemies[i][j].rect.x = start_x + j * (enemy_w + ENEMY_SPACING);
+      g->enemies[i][j].rect.y = START_Y + i * (enemy_h + ENEMY_SPACING);
       g->enemies[i][j].speed = 1.5f;
     }
   }
 }
 
 void enemies_update(Game *g) {
-  hit_edge = false;
+  bool hit_edge = false;
 
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
@@ -74,43 +73,41 @@ void enemies_update(Game *g) {
 bool enemies_load(Game *g) {
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
-      if (g->enemies[i][j].alive) {
-        SDL_Surface *surface;
-        if (i == 0) {
-          surface = IMG_Load("../assets/images/red.png");
-          if (!surface) {
-            fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
-            return false;
-          }
-          g->enemies[i][j].health = 3;
-        } else if (i == 1) {
-          surface = IMG_Load("../assets/images/yellow.png");
-          if (!surface) {
-            fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
-            return false;
-          }
-          g->enemies[i][j].health = 2;
-        } else {
-          surface = IMG_Load("../assets/images/green.png");
-          if (!surface) {
-            fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
-            return false;
-          }
-          g->enemies[i][j].health = 1;
-        }
-
-        g->enemies[i][j].rect.w = (float)surface->w;
-        g->enemies[i][j].rect.h = (float)surface->h;
-
-        g->enemies[i][j].texture =
-            SDL_CreateTextureFromSurface(g->renderer, surface);
-        SDL_DestroySurface(surface);
-        surface = NULL;
-        if (!g->enemies[i][j].texture) {
-          fprintf(stderr, "Error creating texture from surface: %s\n",
-                  SDL_GetError());
+      SDL_Surface *surface;
+      if (i == 0) {
+        surface = IMG_Load("../assets/images/red.png");
+        if (!surface) {
+          fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
           return false;
         }
+        g->enemies[i][j].health = 3;
+      } else if (i == 1) {
+        surface = IMG_Load("../assets/images/yellow.png");
+        if (!surface) {
+          fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
+          return false;
+        }
+        g->enemies[i][j].health = 2;
+      } else {
+        surface = IMG_Load("../assets/images/green.png");
+        if (!surface) {
+          fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
+          return false;
+        }
+        g->enemies[i][j].health = 1;
+      }
+
+      g->enemies[i][j].rect.w = (float)surface->w;
+      g->enemies[i][j].rect.h = (float)surface->h;
+
+      g->enemies[i][j].texture =
+          SDL_CreateTextureFromSurface(g->renderer, surface);
+      SDL_DestroySurface(surface);
+      surface = NULL;
+      if (!g->enemies[i][j].texture) {
+        fprintf(stderr, "Error creating texture from surface: %s\n",
+                SDL_GetError());
+        return false;
       }
     }
   }

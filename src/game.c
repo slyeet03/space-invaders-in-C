@@ -29,11 +29,11 @@ bool new(Game **game) {
     return false;
   }
 
-  enemies_new(g);
-
   if (!load_media(g)) {
     return false;
   }
+
+  enemies_new(g);
 
   g->enemy_direction = 1;
   g->is_running = true;
@@ -68,18 +68,18 @@ void game_reset(Game *g) {
   }
 
   // enemy reset
+  float enemy_w = g->enemies[0][0].rect.w;
+  float enemy_h = g->enemies[0][0].rect.h;
+  float total_width = COLS * enemy_w + (COLS - 1) * ENEMY_SPACING;
+  float start_x = (WINDOW_WIDTH - total_width) / 2.0f;
+
   g->enemy_alive_count = 0;
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
       g->enemies[i][j].alive = true;
       g->enemy_alive_count++;
-
-      int x = START_X + j * (g->enemies[i][j].rect.w + ENEMY_SPACING);
-      int y = START_Y + i * (g->enemies[i][j].rect.h + ENEMY_SPACING);
-
-      g->enemies[i][j].rect.x = x;
-      g->enemies[i][j].rect.y = y;
-
+      g->enemies[i][j].rect.x = start_x + j * (enemy_w + ENEMY_SPACING);
+      g->enemies[i][j].rect.y = START_Y + i * (enemy_h + ENEMY_SPACING);
       g->enemies[i][j].speed = 1.5f;
 
       if (i == 0) {

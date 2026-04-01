@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ENEMY_SPACING 70
-#define START_X 120
+#define ENEMY_SPACING 40
+#define START_X 60
 #define START_Y 50
 
 typedef struct Enemy {
