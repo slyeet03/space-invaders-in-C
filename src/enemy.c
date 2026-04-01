@@ -35,10 +35,10 @@ void enemies_update(Game *g) {
     for (int j = 0; j < COLS; j++) {
       if (g->enemies[i][j].alive) {
         if (g->enemy_alive_count <= 16) {
-          g->enemies[i][j].speed = 2.0f;
+          g->enemies[i][j].speed = 2.8f;
         }
         if (g->enemy_alive_count <= 8) {
-          g->enemies[i][j].speed = 2.5f;
+          g->enemies[i][j].speed = 3.5f;
         }
         int right_boundary = g->enemies[i][j].rect.x + g->enemies[i][j].rect.w;
         int left_boundary = g->enemies[i][j].rect.x;
@@ -77,18 +77,21 @@ bool enemies_load(Game *g) {
             fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
             return false;
           }
+          g->enemies[i][j].health = 3;
         } else if (i == 1) {
           surface = IMG_Load("../assets/images/yellow.png");
           if (!surface) {
             fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
             return false;
           }
+          g->enemies[i][j].health = 2;
         } else {
           surface = IMG_Load("../assets/images/green.png");
           if (!surface) {
             fprintf(stderr, "Error rendering enemy: %s\n", SDL_GetError());
             return false;
           }
+          g->enemies[i][j].health = 1;
         }
 
         g->enemies[i][j].rect.w = (float)surface->w;

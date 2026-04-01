@@ -123,9 +123,22 @@ void collision_update(Game *g) {
             if ((bullet_right > enemy_left) && (bullet_left < enemy_right) &&
                 (bullet_bottom > enemy_top) && (bullet_top < enemy_bottom)) {
               g->player->bullets[i].active = false;
-              g->enemies[j][k].alive = false;
-              g->score->value++;
-              g->enemy_alive_count--;
+
+              g->enemies[j][k].health--;
+              if (g->enemies[j][k].health <= 0) {
+                g->enemies[j][k].alive = false;
+
+                if (j == 0) {
+                  g->score->value += 30;
+                } else if (j == 1) {
+                  g->score->value += 20;
+                } else {
+                  g->score->value += 10;
+                }
+
+                g->enemy_alive_count--;
+              }
+
               score_update(g);
               collision = true;
             }

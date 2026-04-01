@@ -18,6 +18,7 @@ typedef struct Enemy {
   SDL_FRect rect;
   bool alive;
   float speed;
+  int health;
 } Enemy;
 
 typedef struct Game Game;
