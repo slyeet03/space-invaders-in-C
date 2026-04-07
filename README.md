@@ -4,12 +4,11 @@ A Space Invaders clone written in C using SDL3.
 
 ## Demo
 
-[![output](https://www.youtube.com/watch?v=l-1a2B4m20M/0.jpg)](https://www.youtube.com/watch?v=l-1a2B4m20M)
-
+[![output](https://img.youtube.com/vi/l-1a2B4m20M/0.jpg)](https://www.youtube.com/watch?v=l-1a2B4m20M)
 
 ## Funny Bugs
 
-[![output](https://www.youtube.com/watch?v=RZqxwwxbaZ8/0.jpg)](https://www.youtube.com/watch?v=RZqxwwxbaZ8)
+[![output](https://img.youtube.com/vi/RZqxwwxbaZ8/0.jpg)](https://www.youtube.com/watch?v=RZqxwwxbaZ8)
 
 ## Dependencies
 
